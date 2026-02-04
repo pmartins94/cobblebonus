@@ -21,6 +21,7 @@ Root command: `/cobblebonus`
 /cobblebonus shiny modifier clear <target>
 /cobblebonus shiny effective <target>
 ```
+The `<id>` is a string identifier. Numeric IDs like `2` are allowed.
 
 ### Capture modifiers
 ```
@@ -35,6 +36,7 @@ Root command: `/cobblebonus`
 Modifiers are multiplicative and permanent. For example:
 - A multiplier of `1.10` is a **+10%** relative increase.
 - Two modifiers `1.10` and `1.25` combine to `1.10 * 1.25 = 1.375` (a **+37.5%** increase).
+For shiny odds, multipliers divide the base denominator (e.g., `1/8000` with `x2` becomes `1/4000`).
 
 Each modifier is keyed by a string ID. Adding a modifier with an existing ID overwrites the previous value.
 

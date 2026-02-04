@@ -41,9 +41,9 @@ public final class CobbleBonusCobblemonHooks {
                 if (multiplier <= 0) {
                     return currentChance;
                 }
-                float updated = (float) (currentChance * multiplier);
-                if (!Float.isFinite(updated) || updated < 0.0F) {
-                    return currentChance;
+                float updated = (float) (currentChance / multiplier);
+                if (!Float.isFinite(updated) || updated < 1.0F) {
+                    return 1.0F;
                 }
                 return updated;
             }
