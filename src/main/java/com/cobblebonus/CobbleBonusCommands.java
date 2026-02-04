@@ -6,12 +6,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Collection;
-import java.util.UUID;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -45,16 +43,9 @@ public final class CobbleBonusCommands {
                     .then(
                         Commands.literal("add")
                             .then(Commands.argument("target", EntityArgument.players())
-                                .then(Commands.argument("uuid", UuidArgument.uuid())
+                                .then(Commands.argument("id", StringArgumentType.word())
                                     .then(Commands.argument("multiplier", DoubleArgumentType.doubleArg(0.0D))
-                                        .executes(context -> addModifier(context, shiny, null))
-                                        .then(Commands.argument("name", StringArgumentType.greedyString())
-                                            .executes(context -> addModifier(
-                                                context,
-                                                shiny,
-                                                StringArgumentType.getString(context, "name")
-                                            ))
-                                        )
+                                        .executes(context -> addModifier(context, shiny))
                                     )
                                 )
                             )
@@ -62,7 +53,7 @@ public final class CobbleBonusCommands {
                     .then(
                         Commands.literal("remove")
                             .then(Commands.argument("target", EntityArgument.players())
-                                .then(Commands.argument("uuid", UuidArgument.uuid())
+                                .then(Commands.argument("id", StringArgumentType.word())
                                     .executes(context -> removeModifier(context, shiny))
                                 )
                             )
@@ -99,18 +90,17 @@ public final class CobbleBonusCommands {
 
     private static int addModifier(
         CommandContext<CommandSourceStack> context,
-        boolean shiny,
-        String name
+        boolean shiny
     ) throws CommandSyntaxException {
         double multiplier = DoubleArgumentType.getDouble(context, "multiplier");
         if (multiplier <= 0.0D) {
             context.getSource().sendFailure(Component.literal("Multiplier must be > 0."));
             return 0;
         }
-        UUID id = UuidArgument.getUuid(context, "uuid");
+        String id = StringArgumentType.getString(context, "id");
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         for (ServerPlayer target : targets) {
-            ModifierEntry entry = new ModifierEntry(id, multiplier, name);
+            ModifierEntry entry = new ModifierEntry(id, multiplier);
             if (shiny) {
                 ModifierManager.setShinyModifier(target, entry);
             } else {
@@ -126,7 +116,7 @@ public final class CobbleBonusCommands {
 
     private static int removeModifier(CommandContext<CommandSourceStack> context, boolean shiny)
         throws CommandSyntaxException {
-        UUID id = UuidArgument.getUuid(context, "uuid");
+        String id = StringArgumentType.getString(context, "id");
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         int removedCount = 0;
         for (ServerPlayer target : targets) {
@@ -167,16 +157,15 @@ public final class CobbleBonusCommands {
 
     private static void sendModifierList(
         CommandContext<CommandSourceStack> context,
-        java.util.Map<UUID, ModifierEntry> modifiers
+        java.util.Map<String, ModifierEntry> modifiers
     ) {
         if (modifiers.isEmpty()) {
             context.getSource().sendSuccess(() -> Component.literal(" - (none)"), false);
             return;
         }
         for (ModifierEntry entry : modifiers.values()) {
-            String namePart = entry.getName() != null ? " (" + entry.getName() + ")" : "";
             context.getSource().sendSuccess(
-                () -> Component.literal(" - " + entry.getId() + " x" + entry.getMultiplier() + namePart),
+                () -> Component.literal(" - " + entry.getId() + " x" + entry.getMultiplier()),
                 false
             );
         }

@@ -1,21 +1,18 @@
 package com.cobblebonus;
 
 import java.util.Objects;
-import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 
 public final class ModifierEntry {
-    private final UUID id;
+    private final String id;
     private final double multiplier;
-    private final String name;
 
-    public ModifierEntry(UUID id, double multiplier, String name) {
+    public ModifierEntry(String id, double multiplier) {
         this.id = Objects.requireNonNull(id, "id");
         this.multiplier = multiplier;
-        this.name = name;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -23,24 +20,16 @@ public final class ModifierEntry {
         return multiplier;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public CompoundTag toTag() {
         CompoundTag tag = new CompoundTag();
-        tag.putUUID("id", id);
+        tag.putString("id", id);
         tag.putDouble("multiplier", multiplier);
-        if (name != null && !name.isBlank()) {
-            tag.putString("name", name);
-        }
         return tag;
     }
 
     public static ModifierEntry fromTag(CompoundTag tag) {
-        UUID id = tag.getUUID("id");
+        String id = tag.getString("id");
         double multiplier = tag.getDouble("multiplier");
-        String name = tag.contains("name") ? tag.getString("name") : null;
-        return new ModifierEntry(id, multiplier, name);
+        return new ModifierEntry(id, multiplier);
     }
 }

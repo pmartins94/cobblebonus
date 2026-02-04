@@ -3,17 +3,16 @@ package com.cobblebonus;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public final class PlayerModifierData {
-    private final Map<UUID, ModifierEntry> shinyModifiers = new LinkedHashMap<>();
-    private final Map<UUID, ModifierEntry> captureModifiers = new LinkedHashMap<>();
+    private final Map<String, ModifierEntry> shinyModifiers = new LinkedHashMap<>();
+    private final Map<String, ModifierEntry> captureModifiers = new LinkedHashMap<>();
 
-    public Map<UUID, ModifierEntry> getShinyModifiers() {
+    public Map<String, ModifierEntry> getShinyModifiers() {
         return shinyModifiers;
     }
 
-    public Map<UUID, ModifierEntry> getCaptureModifiers() {
+    public Map<String, ModifierEntry> getCaptureModifiers() {
         return captureModifiers;
     }
 
@@ -25,11 +24,11 @@ public final class PlayerModifierData {
         captureModifiers.put(entry.getId(), entry);
     }
 
-    public ModifierEntry removeShinyModifier(UUID id) {
+    public ModifierEntry removeShinyModifier(String id) {
         return shinyModifiers.remove(id);
     }
 
-    public ModifierEntry removeCaptureModifier(UUID id) {
+    public ModifierEntry removeCaptureModifier(String id) {
         return captureModifiers.remove(id);
     }
 

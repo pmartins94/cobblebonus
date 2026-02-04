@@ -15,8 +15,8 @@ Root command: `/cobblebonus`
 
 ### Shiny modifiers
 ```
-/cobblebonus shiny modifier add <target> <uuid> <multiplier> [name...]
-/cobblebonus shiny modifier remove <target> <uuid>
+/cobblebonus shiny modifier add <target> <id> <multiplier>
+/cobblebonus shiny modifier remove <target> <id>
 /cobblebonus shiny modifier list <target>
 /cobblebonus shiny modifier clear <target>
 /cobblebonus shiny effective <target>
@@ -24,8 +24,8 @@ Root command: `/cobblebonus`
 
 ### Capture modifiers
 ```
-/cobblebonus capture modifier add <target> <uuid> <multiplier> [name...]
-/cobblebonus capture modifier remove <target> <uuid>
+/cobblebonus capture modifier add <target> <id> <multiplier>
+/cobblebonus capture modifier remove <target> <id>
 /cobblebonus capture modifier list <target>
 /cobblebonus capture modifier clear <target>
 /cobblebonus capture effective <target>
@@ -36,27 +36,27 @@ Modifiers are multiplicative and permanent. For example:
 - A multiplier of `1.10` is a **+10%** relative increase.
 - Two modifiers `1.10` and `1.25` combine to `1.10 * 1.25 = 1.375` (a **+37.5%** increase).
 
-Each modifier is keyed by UUID. Adding a modifier with an existing UUID overwrites the previous value.
+Each modifier is keyed by a string ID. Adding a modifier with an existing ID overwrites the previous value.
 
 ## Config (server)
 `config/cobblebonus-server.toml`:
 ```
 [caps]
-maxEffectiveShinyMultiplier = 10.0
-maxEffectiveCaptureMultiplier = 2.0
+maxEffectiveShinyMultiplier = 1000.0
+maxEffectiveCaptureMultiplier = 100.0
 maxCatchRate = 255.0
 ```
 
 ## FTB Quests examples
-Use fixed UUIDs per quest to keep rewards idempotent.
+Use fixed string IDs per quest to keep rewards idempotent.
 
 ```
 # +10% shiny chance for the player who completes the quest
-/cobblebonus shiny modifier add @p 4f2c1d66-3c8a-4b90-9b2f-2cb31f114999 1.10 Quest Shiny Bonus
+/cobblebonus shiny modifier add @p quest_shiny_bonus 1.10
 
 # +15% capture rate
-/cobblebonus capture modifier add @p 9a5a5b6e-8b2d-4c10-b3a1-85f1d40de888 1.15 Quest Capture Bonus
+/cobblebonus capture modifier add @p quest_capture_bonus 1.15
 
 # Remove a quest reward later (e.g., admin cleanup)
-/cobblebonus shiny modifier remove @p 4f2c1d66-3c8a-4b90-9b2f-2cb31f114999
+/cobblebonus shiny modifier remove @p quest_shiny_bonus
 ```
