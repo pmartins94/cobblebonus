@@ -6,7 +6,7 @@ plugins {
 }
 
 
-group = "org.example" // TODO: You might want to change it to your group
+group = "com.cobblebonus"
 version = "1.0-SNAPSHOT"
 
 architectury {

@@ -1,0 +1,213 @@
+package com.cobblebonus;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.UuidArgument;
+import com.mojang.brigadier.context.CommandContext;
+import java.util.Collection;
+import java.util.UUID;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+public final class CobbleBonusCommands {
+
+    @SubscribeEvent
+    public void onCommandRegistration(RegisterCommandsEvent event) {
+        register(event.getDispatcher());
+    }
+
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(
+            Commands.literal("cobblebonus")
+                .requires(source -> source.hasPermission(2))
+                .then(buildModifierRoot("shiny", true))
+                .then(buildModifierRoot("capture", false))
+                .then(buildEffectiveRoot("shiny", true))
+                .then(buildEffectiveRoot("capture", false))
+        );
+    }
+
+    private static LiteralCommandNode<CommandSourceStack> buildModifierRoot(
+        String root,
+        boolean shiny
+    ) {
+        return Commands.literal(root)
+            .then(
+                Commands.literal("modifier")
+                    .then(
+                        Commands.literal("add")
+                            .then(Commands.argument("target", EntityArgument.players())
+                                .then(Commands.argument("uuid", UuidArgument.uuid())
+                                    .then(Commands.argument("multiplier", DoubleArgumentType.doubleArg(0.0D))
+                                        .executes(context -> addModifier(context, shiny, null))
+                                        .then(Commands.argument("name", StringArgumentType.greedyString())
+                                            .executes(context -> addModifier(
+                                                context,
+                                                shiny,
+                                                StringArgumentType.getString(context, "name")
+                                            ))
+                                        )
+                                    )
+                                )
+                            )
+                    )
+                    .then(
+                        Commands.literal("remove")
+                            .then(Commands.argument("target", EntityArgument.players())
+                                .then(Commands.argument("uuid", UuidArgument.uuid())
+                                    .executes(context -> removeModifier(context, shiny))
+                                )
+                            )
+                    )
+                    .then(
+                        Commands.literal("list")
+                            .then(Commands.argument("target", EntityArgument.players())
+                                .executes(context -> listModifiers(context, shiny))
+                            )
+                    )
+                    .then(
+                        Commands.literal("clear")
+                            .then(Commands.argument("target", EntityArgument.players())
+                                .executes(context -> clearModifiers(context, shiny))
+                            )
+                    )
+            )
+            .build();
+    }
+
+    private static LiteralCommandNode<CommandSourceStack> buildEffectiveRoot(
+        String root,
+        boolean shiny
+    ) {
+        return Commands.literal(root)
+            .then(
+                Commands.literal("effective")
+                    .then(Commands.argument("target", EntityArgument.players())
+                        .executes(context -> showEffective(context, shiny))
+                    )
+            )
+            .build();
+    }
+
+    private static int addModifier(
+        CommandContext<CommandSourceStack> context,
+        boolean shiny,
+        String name
+    ) {
+        double multiplier = DoubleArgumentType.getDouble(context, "multiplier");
+        if (multiplier <= 0.0D) {
+            context.getSource().sendFailure(Component.literal("Multiplier must be > 0."));
+            return 0;
+        }
+        UUID id = UuidArgument.getUuid(context, "uuid");
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
+        for (ServerPlayer target : targets) {
+            ModifierEntry entry = new ModifierEntry(id, multiplier, name);
+            if (shiny) {
+                ModifierManager.setShinyModifier(target, entry);
+            } else {
+                ModifierManager.setCaptureModifier(target, entry);
+            }
+        }
+        context.getSource().sendSuccess(
+            () -> Component.literal("Added modifier to " + targets.size() + " player(s)."),
+            true
+        );
+        return targets.size();
+    }
+
+    private static int removeModifier(CommandContext<CommandSourceStack> context, boolean shiny) {
+        UUID id = UuidArgument.getUuid(context, "uuid");
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
+        int removedCount = 0;
+        for (ServerPlayer target : targets) {
+            boolean removed = shiny
+                ? ModifierManager.removeShinyModifier(target, id)
+                : ModifierManager.removeCaptureModifier(target, id);
+            if (removed) {
+                removedCount++;
+            }
+        }
+        context.getSource().sendSuccess(
+            () -> Component.literal("Removed modifier from " + removedCount + " player(s)."),
+            true
+        );
+        return removedCount;
+    }
+
+    private static int listModifiers(CommandContext<CommandSourceStack> context, boolean shiny) {
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
+        for (ServerPlayer target : targets) {
+            PlayerModifierData data = ModifierManager.getPlayerData(target);
+            context.getSource().sendSuccess(
+                () -> Component.literal(
+                    "Modifiers for " + target.getGameProfile().getName() + " (" + (shiny ? "shiny" : "capture") + "):"
+                ),
+                false
+            );
+            if (shiny) {
+                sendModifierList(context, data.getShinyModifiers());
+            } else {
+                sendModifierList(context, data.getCaptureModifiers());
+            }
+        }
+        return targets.size();
+    }
+
+    private static void sendModifierList(
+        CommandContext<CommandSourceStack> context,
+        java.util.Map<UUID, ModifierEntry> modifiers
+    ) {
+        if (modifiers.isEmpty()) {
+            context.getSource().sendSuccess(() -> Component.literal(" - (none)"), false);
+            return;
+        }
+        for (ModifierEntry entry : modifiers.values()) {
+            String namePart = entry.getName() != null ? " (" + entry.getName() + ")" : "";
+            context.getSource().sendSuccess(
+                () -> Component.literal(" - " + entry.getId() + " x" + entry.getMultiplier() + namePart),
+                false
+            );
+        }
+    }
+
+    private static int clearModifiers(CommandContext<CommandSourceStack> context, boolean shiny) {
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
+        for (ServerPlayer target : targets) {
+            if (shiny) {
+                ModifierManager.clearShiny(target);
+            } else {
+                ModifierManager.clearCapture(target);
+            }
+        }
+        context.getSource().sendSuccess(
+            () -> Component.literal("Cleared modifiers for " + targets.size() + " player(s)."),
+            true
+        );
+        return targets.size();
+    }
+
+    private static int showEffective(CommandContext<CommandSourceStack> context, boolean shiny) {
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
+        for (ServerPlayer target : targets) {
+            double value = shiny
+                ? ModifierManager.getEffectiveShinyMultiplier(target)
+                : ModifierManager.getEffectiveCaptureMultiplier(target);
+            context.getSource().sendSuccess(
+                () -> Component.literal(
+                    "Effective " + (shiny ? "shiny" : "capture") + " multiplier for "
+                        + target.getGameProfile().getName() + ": x" + value
+                ),
+                false
+            );
+        }
+        return targets.size();
+    }
+}

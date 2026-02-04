@@ -1,33 +1,33 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-issueTrackerURL = "https://github.com/Pikapowner/cobblemon-rewards/issues"
+issueTrackerURL = "https://github.com/example/cobblebonus/issues"
 license = "GPL v3"
 
 [[mods]]
-modId = "cobblemonrewards"
+modId = "cobblebonus"
 version = "${version}"
-displayName = "Cobblemon Rewards"
-authors = "Pikapowner"
+displayName = "CobbleBonus"
+authors = "CobbleBonus Team"
 description = '''
-A very cool multi-line description!
+Permanent per-player multipliers for Cobblemon shiny chance and catch rate.
 '''
 #logoFile = ""
 
-[[dependencies.cobblemonrewards]]
+[[dependencies.cobblebonus]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.cobblemonrewards]]
+[[dependencies.cobblebonus]]
 modId = "neoforge"
 mandatory = true
 versionRange = "[21.1.219,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.cobblemonrewards]]
+[[dependencies.cobblebonus]]
 modId = "cobblemon"
 mandatory = true
 versionRange = "[1.7.3,)"
