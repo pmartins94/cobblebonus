@@ -199,10 +199,8 @@ public final class CobbleBonusCommands {
             double raw = shiny ? data.getRawShinyMultiplier() : data.getRawCaptureMultiplier();
             double value = Math.min(raw, cap);
             String message = "Effective " + (shiny ? "shiny" : "capture") + " multiplier for "
-                + target.getGameProfile().getName() + ": x" + value;
-            if (raw > cap) {
-                message += " (capped from x" + raw + ", cap x" + cap + ")";
-            }
+                + target.getGameProfile().getName() + ": x" + value
+                + " (raw x" + raw + ", cap x" + cap + ")";
             context.getSource().sendSuccess(
                 () -> Component.literal(message),
                 false
