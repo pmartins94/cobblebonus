@@ -1,6 +1,5 @@
 // By default, this is how your built jar is called
-// TODO: you might want to change it
-rootProject.name = "NeoForge"
+rootProject.name = "CobbleBonus"
 
 pluginManagement {
     repositories {

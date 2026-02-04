@@ -7,7 +7,11 @@ plugins {
 
 
 group = "com.cobblebonus"
-version = "1.0-SNAPSHOT"
+version = (project.findProperty("mod_version") as String?) ?: "0.0.0"
+
+base {
+    archivesName.set((project.findProperty("mod_name") as String?) ?: "CobbleBonus")
+}
 
 architectury {
     platformSetupLoomIde()
