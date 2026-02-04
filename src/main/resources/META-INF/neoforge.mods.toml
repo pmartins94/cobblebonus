@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/Pikapowner/cobblemon-rewards/issues"
+license = "GPL v3"
+
+[[mods]]
+modId = "cobblemonrewards"
+version = "${version}"
+displayName = "Cobblemon Rewards"
+authors = "Pikapowner"
+description = '''
+A very cool multi-line description!
+'''
+#logoFile = ""
+
+[[dependencies.cobblemonrewards]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.1]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.cobblemonrewards]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[21.1.219,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.cobblemonrewards]]
+modId = "cobblemon"
+mandatory = true
+versionRange = "[1.7.3,)"
+ordering = "AFTER"
+side = "BOTH"
