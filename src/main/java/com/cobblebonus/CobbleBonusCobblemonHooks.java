@@ -38,9 +38,14 @@ public final class CobbleBonusCobblemonHooks {
                     return currentChance;
                 }
                 double multiplier = ModifierManager.getEffectiveShinyMultiplier(player);
+                if (multiplier <= 0) {
+                    return currentChance;
+                }
                 float updated = (float) (currentChance * multiplier);
-                float capped = Math.min(updated, 1.0F);
-                return Math.max(0.0F, capped);
+                if (!Float.isFinite(updated) || updated < 0.0F) {
+                    return currentChance;
+                }
+                return updated;
             }
         );
     }
