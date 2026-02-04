@@ -14,10 +14,10 @@ public final class CobbleBonusConfig {
 
         MAX_EFFECTIVE_SHINY_MULTIPLIER = builder
             .comment("Maximum effective multiplier for shiny chance.")
-            .defineInRange("maxEffectiveShinyMultiplier", 10.0D, 0.01D, 1000.0D);
+            .defineInRange("maxEffectiveShinyMultiplier", 1000.0D, 0.01D, 10000.0D);
         MAX_EFFECTIVE_CAPTURE_MULTIPLIER = builder
             .comment("Maximum effective multiplier for capture catch rate.")
-            .defineInRange("maxEffectiveCaptureMultiplier", 2.0D, 0.01D, 1000.0D);
+            .defineInRange("maxEffectiveCaptureMultiplier", 100.0D, 0.01D, 10000.0D);
         MAX_CATCH_RATE = builder
             .comment("Maximum catch rate value after multiplier is applied.")
             .defineInRange("maxCatchRate", 255.0D, 1.0D, 100000.0D);

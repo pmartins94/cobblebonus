@@ -1,6 +1,5 @@
 package com.cobblebonus;
 
-import java.util.UUID;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,7 +42,7 @@ public final class ModifierManager {
         data.setDirty();
     }
 
-    public static boolean removeShinyModifier(ServerPlayer player, UUID id) {
+    public static boolean removeShinyModifier(ServerPlayer player, String id) {
         CobbleBonusSavedData data = getData(player.server);
         ModifierEntry removed = data.getOrCreate(player.getUUID()).removeShinyModifier(id);
         if (removed != null) {
@@ -53,7 +52,7 @@ public final class ModifierManager {
         return false;
     }
 
-    public static boolean removeCaptureModifier(ServerPlayer player, UUID id) {
+    public static boolean removeCaptureModifier(ServerPlayer player, String id) {
         CobbleBonusSavedData data = getData(player.server);
         ModifierEntry removed = data.getOrCreate(player.getUUID()).removeCaptureModifier(id);
         if (removed != null) {

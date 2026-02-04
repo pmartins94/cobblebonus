@@ -57,7 +57,7 @@ public final class CobbleBonusSavedData extends SavedData {
     private static void readModifierList(
         CompoundTag playerTag,
         String key,
-        Map<UUID, ModifierEntry> target
+        Map<String, ModifierEntry> target
     ) {
         ListTag listTag = playerTag.getList(key, Tag.TAG_COMPOUND);
         for (int i = 0; i < listTag.size(); i++) {
@@ -67,7 +67,7 @@ public final class CobbleBonusSavedData extends SavedData {
         }
     }
 
-    private static ListTag writeModifierList(Map<UUID, ModifierEntry> entries) {
+    private static ListTag writeModifierList(Map<String, ModifierEntry> entries) {
         ListTag listTag = new ListTag();
         for (ModifierEntry entry : entries.values()) {
             listTag.add(entry.toTag());
