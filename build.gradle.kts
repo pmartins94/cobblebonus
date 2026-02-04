@@ -5,9 +5,8 @@ plugins {
     kotlin("jvm") version("2.2.20")
 }
 
-
-group = "org.example" // TODO: You might want to change it to your group
-version = "1.0-SNAPSHOT"
+group = "com.cobblebonus"
+version = "1.0.0"
 
 architectury {
     platformSetupLoomIde()
@@ -33,7 +32,6 @@ dependencies {
     neoForge("net.neoforged:neoforge:21.1.182")
 
     modImplementation("com.cobblemon:neoforge:1.7.3+1.21.1")
-    //Needed for cobblemon
     implementation("thedarkcolour:kotlinforforge-neoforge:5.10.0") {
         exclude("net.neoforged.fancymodloader", "loader")
     }
@@ -51,4 +49,10 @@ tasks.processResources {
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(project.properties)
     }
+}
+
+tasks.register<Jar>("releaseJar") {
+    archiveClassifier.set("release")
+    from(sourceSets.main.get().output)
+    dependsOn("jar")
 }
