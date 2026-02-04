@@ -24,7 +24,7 @@ public final class CobbleBonusSavedData extends SavedData {
     }
 
     public static Factory<CobbleBonusSavedData> factory() {
-        return new Factory<>(CobbleBonusSavedData::new, CobbleBonusSavedData::load, DataFixTypes.SAVED_DATA);
+        return new Factory<>(CobbleBonusSavedData::new, CobbleBonusSavedData::load, DataFixTypes.LEVEL);
     }
 
     private static CobbleBonusSavedData load(CompoundTag tag, HolderLookup.Provider provider) {
