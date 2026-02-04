@@ -48,14 +48,6 @@ public final class PlayerModifierData {
         return computeMultiplier(captureModifiers.values(), cap);
     }
 
-    public double getRawShinyMultiplier() {
-        return computeRawMultiplier(shinyModifiers.values());
-    }
-
-    public double getRawCaptureMultiplier() {
-        return computeRawMultiplier(captureModifiers.values());
-    }
-
     private double computeMultiplier(Collection<ModifierEntry> entries, double cap) {
         double total = 1.0D;
         for (ModifierEntry entry : entries) {
@@ -65,13 +57,5 @@ public final class PlayerModifierData {
             }
         }
         return Math.min(total, cap);
-    }
-
-    private double computeRawMultiplier(Collection<ModifierEntry> entries) {
-        double total = 1.0D;
-        for (ModifierEntry entry : entries) {
-            total *= entry.getMultiplier();
-        }
-        return total;
     }
 }
