@@ -11,7 +11,7 @@ public final class CobbleBonus {
 
     public CobbleBonus() {
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, CobbleBonusConfig.SPEC);
-        NeoForge.EVENT_BUS.register(new CobbleBonusEvents());
+        CobbleBonusCobblemonHooks.register();
         NeoForge.EVENT_BUS.register(new CobbleBonusCommands());
     }
 }

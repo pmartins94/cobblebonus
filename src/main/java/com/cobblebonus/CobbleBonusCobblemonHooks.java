@@ -1,16 +1,27 @@
 package com.cobblebonus;
 
+import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokeball.PokemonCatchRateEvent;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.jvm.functions.Function3;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
 
-public final class CobbleBonusEvents {
+public final class CobbleBonusCobblemonHooks {
+    private CobbleBonusCobblemonHooks() {
+    }
 
-    @SubscribeEvent
-    public void onCatchRate(PokemonCatchRateEvent event) {
+    public static void register() {
+        CobblemonEvents.POKEMON_CATCH_RATE.subscribe(event -> {
+            onCatchRate(event);
+        });
+
+        CobblemonEvents.SHINY_CHANCE_CALCULATION.subscribe(event -> {
+            onShinyChance(event);
+        });
+    }
+
+    private static void onCatchRate(PokemonCatchRateEvent event) {
         if (!(event.getThrower() instanceof ServerPlayer player)) {
             return;
         }
@@ -20,8 +31,7 @@ public final class CobbleBonusEvents {
         event.setCatchRate(capped);
     }
 
-    @SubscribeEvent
-    public void onShinyChance(ShinyChanceCalculationEvent event) {
+    private static void onShinyChance(ShinyChanceCalculationEvent event) {
         event.addModificationFunction((Function3<Float, ServerPlayer, Pokemon, Float>)
             (currentChance, player, pokemon) -> {
                 if (player == null) {

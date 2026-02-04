@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Collection;
 import java.util.UUID;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -100,7 +101,7 @@ public final class CobbleBonusCommands {
         CommandContext<CommandSourceStack> context,
         boolean shiny,
         String name
-    ) {
+    ) throws CommandSyntaxException {
         double multiplier = DoubleArgumentType.getDouble(context, "multiplier");
         if (multiplier <= 0.0D) {
             context.getSource().sendFailure(Component.literal("Multiplier must be > 0."));
@@ -123,7 +124,8 @@ public final class CobbleBonusCommands {
         return targets.size();
     }
 
-    private static int removeModifier(CommandContext<CommandSourceStack> context, boolean shiny) {
+    private static int removeModifier(CommandContext<CommandSourceStack> context, boolean shiny)
+        throws CommandSyntaxException {
         UUID id = UuidArgument.getUuid(context, "uuid");
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         int removedCount = 0;
@@ -135,14 +137,16 @@ public final class CobbleBonusCommands {
                 removedCount++;
             }
         }
+        int finalRemovedCount = removedCount;
         context.getSource().sendSuccess(
-            () -> Component.literal("Removed modifier from " + removedCount + " player(s)."),
+            () -> Component.literal("Removed modifier from " + finalRemovedCount + " player(s)."),
             true
         );
         return removedCount;
     }
 
-    private static int listModifiers(CommandContext<CommandSourceStack> context, boolean shiny) {
+    private static int listModifiers(CommandContext<CommandSourceStack> context, boolean shiny)
+        throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         for (ServerPlayer target : targets) {
             PlayerModifierData data = ModifierManager.getPlayerData(target);
@@ -178,7 +182,8 @@ public final class CobbleBonusCommands {
         }
     }
 
-    private static int clearModifiers(CommandContext<CommandSourceStack> context, boolean shiny) {
+    private static int clearModifiers(CommandContext<CommandSourceStack> context, boolean shiny)
+        throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         for (ServerPlayer target : targets) {
             if (shiny) {
@@ -194,7 +199,8 @@ public final class CobbleBonusCommands {
         return targets.size();
     }
 
-    private static int showEffective(CommandContext<CommandSourceStack> context, boolean shiny) {
+    private static int showEffective(CommandContext<CommandSourceStack> context, boolean shiny)
+        throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         for (ServerPlayer target : targets) {
             double value = shiny
