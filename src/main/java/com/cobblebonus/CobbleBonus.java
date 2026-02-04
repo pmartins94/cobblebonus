@@ -10,7 +10,7 @@ public final class CobbleBonus {
     public static final String MOD_ID = "cobblebonus";
 
     public CobbleBonus() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, CobbleBonusConfig.SPEC);
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, CobbleBonusConfig.SPEC);
         NeoForge.EVENT_BUS.register(new CobbleBonusEvents());
         NeoForge.EVENT_BUS.register(new CobbleBonusCommands());
     }
