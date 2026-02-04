@@ -13,7 +13,7 @@ This is a server-side mod. Clients do not need to install it.
 ## Commands (OP-only)
 Root command: `/cobblebonus`
 
-### Shiny modifiers
+### Shiny modifiers (examples)
 ```
 /cobblebonus shiny modifier add <target> <id> <multiplier>
 /cobblebonus shiny modifier remove <target> <id>
@@ -23,13 +23,31 @@ Root command: `/cobblebonus`
 ```
 The `<id>` is a string identifier. Numeric IDs like `2` are allowed.
 
-### Capture modifiers
+Example:
+```
+# Add a permanent +25% shiny multiplier to Skinstadd
+/cobblebonus shiny modifier add Skinstadd shiny_bonus 1.25
+
+# Verify the effective multiplier
+/cobblebonus shiny effective Skinstadd
+```
+
+### Capture modifiers (examples)
 ```
 /cobblebonus capture modifier add <target> <id> <multiplier>
 /cobblebonus capture modifier remove <target> <id>
 /cobblebonus capture modifier list <target>
 /cobblebonus capture modifier clear <target>
 /cobblebonus capture effective <target>
+```
+
+Example:
+```
+# Add a permanent +50% capture multiplier to all online players
+/cobblebonus capture modifier add @a capture_bonus 1.50
+
+# Verify the effective multiplier
+/cobblebonus capture effective @a
 ```
 
 ### Multiplier math
@@ -40,6 +58,13 @@ For shiny odds, multipliers divide the base denominator (e.g., `1/8000` with `x2
 
 Each modifier is keyed by a string ID. Adding a modifier with an existing ID overwrites the previous value.
 
+### How to check your current multiplier
+Use the `effective` command to see the final multiplier after all modifiers are combined and capped:
+```
+/cobblebonus shiny effective <target>
+/cobblebonus capture effective <target>
+```
+
 ## Config (server)
 `config/cobblebonus-server.toml`:
 ```
@@ -48,6 +73,11 @@ maxEffectiveShinyMultiplier = 1000.0
 maxEffectiveCaptureMultiplier = 100.0
 maxCatchRate = 255.0
 ```
+
+Config meanings:
+- `maxEffectiveShinyMultiplier`: Maximum combined shiny multiplier after all modifiers are multiplied.
+- `maxEffectiveCaptureMultiplier`: Maximum combined capture multiplier after all modifiers are multiplied.
+- `maxCatchRate`: Hard clamp on the final catch rate value after the capture multiplier is applied.
 
 ## FTB Quests examples
 Use fixed string IDs per quest to keep rewards idempotent.
