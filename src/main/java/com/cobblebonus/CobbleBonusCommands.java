@@ -192,14 +192,19 @@ public final class CobbleBonusCommands {
         throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "target");
         for (ServerPlayer target : targets) {
-            double value = shiny
-                ? ModifierManager.getEffectiveShinyMultiplier(target)
-                : ModifierManager.getEffectiveCaptureMultiplier(target);
+            PlayerModifierData data = ModifierManager.getPlayerData(target);
+            double cap = shiny
+                ? CobbleBonusConfig.MAX_EFFECTIVE_SHINY_MULTIPLIER.get()
+                : CobbleBonusConfig.MAX_EFFECTIVE_CAPTURE_MULTIPLIER.get();
+            double raw = shiny ? data.getRawShinyMultiplier() : data.getRawCaptureMultiplier();
+            double value = Math.min(raw, cap);
+            String message = "Effective " + (shiny ? "shiny" : "capture") + " multiplier for "
+                + target.getGameProfile().getName() + ": x" + value;
+            if (raw > cap) {
+                message += " (capped from x" + raw + ", cap x" + cap + ")";
+            }
             context.getSource().sendSuccess(
-                () -> Component.literal(
-                    "Effective " + (shiny ? "shiny" : "capture") + " multiplier for "
-                        + target.getGameProfile().getName() + ": x" + value
-                ),
+                () -> Component.literal(message),
                 false
             );
         }
