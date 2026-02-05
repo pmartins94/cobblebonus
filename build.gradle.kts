@@ -34,7 +34,7 @@ repositories {
 dependencies {
     minecraft("net.minecraft:minecraft:1.21.1")
     mappings(loom.officialMojangMappings())
-    neoForge("net.neoforged:neoforge:21.1.182")
+    neoForge("net.neoforged:neoforge:21.1.219")
 
     modImplementation("com.cobblemon:neoforge:1.7.3+1.21.1")
     //Needed for cobblemon
