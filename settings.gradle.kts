@@ -1,5 +1,5 @@
 // By default, this is how your built jar is called
-rootProject.name = "CobbleBonus"
+rootProject.name = "Cobblemon-Bonus"
 
 pluginManagement {
     repositories {

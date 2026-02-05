@@ -6,8 +6,8 @@ license = "GPL v3"
 [[mods]]
 modId = "cobblebonus"
 version = "${version}"
-displayName = "CobbleBonus"
-authors = "CobbleBonus Team"
+displayName = "Cobblemon-Bonus"
+authors = "Cobblemon-Bonus Team"
 description = '''
 Permanent per-player multipliers for Cobblemon shiny chance and catch rate.
 '''

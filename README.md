@@ -1,11 +1,11 @@
-# CobbleBonus (NeoForge 1.21.x)
+# Cobblemon-Bonus (NeoForge 1.21.x)
 
-CobbleBonus provides permanent, per-player multipliers for Cobblemon shiny chance and capture catch rate. All modifiers are permanent and stack by multiplication only (no additive bonuses).
+Cobblemon-Bonus provides permanent, per-player multipliers for Cobblemon shiny chance and capture catch rate. All modifiers are permanent and stack by multiplication only (no additive bonuses).
 
 ## Install
 1. Install NeoForge for Minecraft 1.21.x on your server.
 2. Install Cobblemon (NeoForge) 1.7.3+.
-3. Drop the CobbleBonus jar into your server's `mods/` folder.
+3. Drop the Cobblemon-Bonus jar into your server's `mods/` folder.
 4. (Optional) Edit `config/cobblebonus-server.toml` to adjust multiplier caps and catch rate clamp.
 
 This is a server-side mod. Clients do not need to install it.
