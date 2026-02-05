@@ -25,10 +25,24 @@ public final class CobbleBonusCobblemonHooks {
         if (!(event.getThrower() instanceof ServerPlayer player)) {
             return;
         }
+        float original = event.getCatchRate();
         double multiplier = ModifierManager.getEffectiveCaptureMultiplier(player);
-        float updated = (float) (event.getCatchRate() * multiplier);
+        float updated = (float) (original * multiplier);
         float capped = (float) Math.min(updated, CobbleBonusConfig.MAX_CATCH_RATE.get());
         event.setCatchRate(capped);
+        if (CobbleBonusConfig.DEBUG_CAPTURE.get()) {
+            Pokemon pokemon = event.getPokemonEntity().getPokemon();
+            CobbleBonus.LOGGER.info(
+                "Capture rate debug: player={} uuid={} pokemon={} lvl={} oldRate={} multiplier={} newRate={}",
+                player.getName().getString(),
+                player.getUUID(),
+                pokemon.getSpecies().getName(),
+                pokemon.getLevel(),
+                original,
+                multiplier,
+                capped
+            );
+        }
     }
 
     private static void onShinyChance(ShinyChanceCalculationEvent event) {

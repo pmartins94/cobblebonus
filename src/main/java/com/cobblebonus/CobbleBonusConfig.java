@@ -7,6 +7,7 @@ public final class CobbleBonusConfig {
     public static final ModConfigSpec.DoubleValue MAX_EFFECTIVE_SHINY_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_EFFECTIVE_CAPTURE_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_CATCH_RATE;
+    public static final ModConfigSpec.BooleanValue DEBUG_CAPTURE;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -21,6 +22,13 @@ public final class CobbleBonusConfig {
         MAX_CATCH_RATE = builder
             .comment("Maximum catch rate value after multiplier is applied.")
             .defineInRange("maxCatchRate", 255.0D, 1.0D, 100000.0D);
+
+        builder.pop();
+        builder.push("debug");
+
+        DEBUG_CAPTURE = builder
+            .comment("Enable debug logging for capture multiplier calculations.")
+            .define("debugCapture", false);
 
         builder.pop();
         SPEC = builder.build();
