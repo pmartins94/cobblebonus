@@ -1,6 +1,6 @@
 # Cobblemon-Bonus (NeoForge 1.21.x)
 
-Cobblemon-Bonus provides permanent, per-player multipliers for Cobblemon shiny chance and capture catch rate. All modifiers are permanent and stack by multiplication only (no additive bonuses).
+Cobblemon-Bonus provides permanent, per-player multipliers for Cobblemon shiny chance and capture catch rate. All modifiers are permanent and stack by multiplication only (no additive bonuses). Capture multipliers now act like additional invisible attempts against the final capture result, so they stack naturally with ball bonuses and feel stronger in-game.
 
 ## Install
 1. Install NeoForge for Minecraft 1.21.x on your server.
@@ -55,6 +55,7 @@ Modifiers are multiplicative and permanent. For example:
 - A multiplier of `1.10` is a **+10%** relative increase.
 - Two modifiers `1.10` and `1.25` combine to `1.10 * 1.25 = 1.375` (a **+37.5%** increase).
 For shiny odds, multipliers divide the base denominator (e.g., `1/8000` with `x2` becomes `1/4000`).
+For capture, the multiplier grants extra invisible attempts at the final capture calculation, so an Ultra Ball's bonus still applies and a quest buff feels noticeable (e.g., Ultra Ball `x2` plus quest buff `x3` makes catches feel much easier).
 
 Each modifier is keyed by a string ID. Adding a modifier with an existing ID overwrites the previous value.
 
@@ -72,12 +73,18 @@ Use the `effective` command to see the final multiplier after all modifiers are 
 maxEffectiveShinyMultiplier = 1000.0
 maxEffectiveCaptureMultiplier = 100.0
 maxCatchRate = 255.0
+
+[capture]
+enableCaptureRerolls = true
+maxCaptureAttempts = 20
 ```
 
 Config meanings:
 - `maxEffectiveShinyMultiplier`: Maximum combined shiny multiplier after all modifiers are multiplied.
 - `maxEffectiveCaptureMultiplier`: Maximum combined capture multiplier after all modifiers are multiplied.
 - `maxCatchRate`: Hard clamp on the final catch rate value after the capture multiplier is applied.
+- `enableCaptureRerolls`: When true, extra capture attempts are rolled based on the effective capture multiplier.
+- `maxCaptureAttempts`: Hard cap on the total attempts (original + rerolls) to prevent extreme multipliers from spamming rerolls.
 
 ## FTB Quests examples
 Use fixed string IDs per quest to keep rewards idempotent.

@@ -7,6 +7,8 @@ public final class CobbleBonusConfig {
     public static final ModConfigSpec.DoubleValue MAX_EFFECTIVE_SHINY_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_EFFECTIVE_CAPTURE_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue MAX_CATCH_RATE;
+    public static final ModConfigSpec.BooleanValue ENABLE_CAPTURE_REROLLS;
+    public static final ModConfigSpec.IntValue MAX_CAPTURE_ATTEMPTS;
     public static final ModConfigSpec.BooleanValue DEBUG_CAPTURE;
 
     static {
@@ -22,6 +24,16 @@ public final class CobbleBonusConfig {
         MAX_CATCH_RATE = builder
             .comment("Maximum catch rate value after multiplier is applied.")
             .defineInRange("maxCatchRate", 255.0D, 1.0D, 100000.0D);
+
+        builder.pop();
+        builder.push("capture");
+
+        ENABLE_CAPTURE_REROLLS = builder
+            .comment("Enable capture rerolls based on the effective capture multiplier.")
+            .define("enableCaptureRerolls", true);
+        MAX_CAPTURE_ATTEMPTS = builder
+            .comment("Maximum number of total capture attempts (including the original).")
+            .defineInRange("maxCaptureAttempts", 20, 1, 1000);
 
         builder.pop();
         builder.push("debug");
